@@ -1,4 +1,4 @@
-package br.edu.ifto.usuariocomtarefasnoturno.model;
+package br.edu.ifto.usuariocomtarefasnoturno.model.entities;
 
 import java.util.Objects;
 
@@ -9,6 +9,12 @@ public class Categoria {
     public Categoria(int id, String nome) {
         this.id = id;
         this.nome = nome;
+    }
+
+    public Categoria() {
+    }
+
+    public Categoria(String nome) {
     }
 
     public int getId() { return id; }

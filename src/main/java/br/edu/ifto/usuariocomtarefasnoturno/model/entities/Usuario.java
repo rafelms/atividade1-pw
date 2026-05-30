@@ -1,4 +1,6 @@
-package br.edu.ifto.usuariocomtarefasnoturno.model;
+package br.edu.ifto.usuariocomtarefasnoturno.model.entities;
+
+import br.edu.ifto.usuariocomtarefasnoturno.model.enums.PerfilEnum;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,13 +11,13 @@ public class Usuario {
     private String nome, login, senha;
     private List<Tarefa> tarefas = new ArrayList<>();
 
-    private String perfil;
+    private PerfilEnum perfil;
 
 
     public Usuario() {
     }
 
-    public Usuario(String nome, String login, String senha, String perfil) {
+    public Usuario(String nome, String login, String senha, PerfilEnum perfil) {
         this.nome = nome;
         this.login = login;
         this.senha = senha;
@@ -29,11 +31,11 @@ public class Usuario {
         this.senha = senha;
     }
 
-    public String getPerfil() {
+    public PerfilEnum getPerfil() {
         return perfil;
     }
 
-    public void setPerfil(String perfil) {
+    public void setPerfil(PerfilEnum perfil) {
         this.perfil = perfil;
     }
 
