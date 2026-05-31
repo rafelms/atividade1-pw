@@ -42,3 +42,10 @@ VALUES ('Rafael Admin', 'admin', 'admin123', 'ADMIN');
 
 -- (Opcional) Inserindo categorias iniciais para o sistema não nascer vazio
 INSERT INTO categoria (nome) VALUES ('CASA'), ('TRABALHO'), ('ESTUDOS');
+
+
+
+
+
+
+REVISAR CODIGO + AQUILO QUE O PROF PEDIU

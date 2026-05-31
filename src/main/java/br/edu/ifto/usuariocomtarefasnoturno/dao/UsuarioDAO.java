@@ -14,8 +14,13 @@ public class UsuarioDAO {
     public void cadastrar(Usuario usuario) {
         String sql = "INSERT INTO usuario (nome, login, senha, perfil) VALUES (?, ?, ?, ?)";
 
-        try (Connection con = Conexao.getConexao();
-             PreparedStatement stmt = con.prepareStatement(sql)) {
+        // Declarados fora do try para que o bloco finally consiga enxergá-los e fechá-los
+        Connection con = null;
+        PreparedStatement stmt = null;
+
+        try {
+            con = Conexao.getConexao();
+            stmt = con.prepareStatement(sql);
 
             stmt.setString(1, usuario.getNome());
             stmt.setString(2, usuario.getLogin());
@@ -26,40 +31,63 @@ public class UsuarioDAO {
 
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao cadastrar usuário no banco: " + e.getMessage(), e);
+
+        } finally {
+            // Sem ResultSet neste método — fechamento na ordem: Statement → Connection
+            Conexao.fecharStatement(stmt);
+            Conexao.fecharConexao(con);
         }
     }
 
     public Usuario autenticar(String login, String senha) {
         String sql = "SELECT * FROM usuario WHERE login = ? AND senha = ?";
 
-        try (Connection con = Conexao.getConexao();
-             PreparedStatement stmt = con.prepareStatement(sql)) {
+        // Declarados fora do try — ResultSet também é necessário aqui para ser fechado no finally
+        Connection con = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            con = Conexao.getConexao();
+            stmt = con.prepareStatement(sql);
 
             stmt.setString(1, login);
             stmt.setString(2, senha);
+            rs = stmt.executeQuery();
 
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    Usuario u = new Usuario();
-                    u.setId(rs.getInt("id"));
-                    u.setNome(rs.getString("nome"));
-                    u.setLogin(rs.getString("login"));
-                    u.setSenha(rs.getString("senha"));
-                    u.setPerfil(PerfilEnum.valueOf(rs.getString("perfil")));
-                    return u;
-                }
+            if (rs.next()) {
+                Usuario u = new Usuario();
+                u.setId(rs.getInt("id"));
+                u.setNome(rs.getString("nome"));
+                u.setLogin(rs.getString("login"));
+                u.setSenha(rs.getString("senha"));
+                u.setPerfil(PerfilEnum.valueOf(rs.getString("perfil")));
+                return u;
             }
+
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao buscar usuário para login.", e);
+
+        } finally {
+            // Com ResultSet — fechamento na ordem obrigatória: ResultSet → Statement → Connection
+            Conexao.fecharResultSet(rs);
+            Conexao.fecharStatement(stmt);
+            Conexao.fecharConexao(con);
         }
+
         return null; // Retorna null se não achar login/senha correspondentes
     }
 
     public void atualizar(Usuario usuario) {
         String sql = "UPDATE usuario SET nome = ?, senha = ? WHERE id = ?";
 
-        try (Connection con = Conexao.getConexao();
-             PreparedStatement stmt = con.prepareStatement(sql)) {
+        // Declarados fora do try para que o bloco finally consiga enxergá-los e fechá-los
+        Connection con = null;
+        PreparedStatement stmt = null;
+
+        try {
+            con = Conexao.getConexao();
+            stmt = con.prepareStatement(sql);
 
             stmt.setString(1, usuario.getNome());
             stmt.setString(2, usuario.getSenha());
@@ -69,6 +97,11 @@ public class UsuarioDAO {
 
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao atualizar usuário no banco: " + e.getMessage(), e);
+
+        } finally {
+            // Sem ResultSet neste método — fechamento na ordem: Statement → Connection
+            Conexao.fecharStatement(stmt);
+            Conexao.fecharConexao(con);
         }
     }
 }
