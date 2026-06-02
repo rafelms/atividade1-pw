@@ -27,15 +27,12 @@ public class VerTarefasController extends HttpServlet {
             return;
         }
 
-        // 1. Recupera o usuário logado da sessão para saber o ID dele
         Usuario logado = (Usuario) session.getAttribute("usuarioLogado");
 
         try {
-            // 2. Instancia o DAO e busca as tarefas reais salvas no banco
             TarefaDAO dao = new TarefaDAO();
             List<Tarefa> lista = dao.listarPorUsuario(logado.getId());
 
-            // 3. Envia a lista para a JSP através do escopo do Request
             request.setAttribute("listaTarefas", lista);
 
         } catch (Exception e) {

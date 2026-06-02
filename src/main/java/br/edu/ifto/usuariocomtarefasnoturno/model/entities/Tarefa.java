@@ -10,17 +10,13 @@ public class Tarefa {
     private String descricao;
     private LocalDate data;
 
-    // Novos atributos para mapear as chaves estrangeiras do banco!
     private int idUsuario;
     private int idCategoria;
-
-    // Atributo auxiliar para exibir o nome da categoria na tela (no JSP)
     private String categoria;
 
     public Tarefa() {
     }
 
-    // Construtor atualizado
     public Tarefa(String titulo, String descricao, LocalDate data, String categoria) {
         this.titulo = titulo;
         this.descricao = descricao;

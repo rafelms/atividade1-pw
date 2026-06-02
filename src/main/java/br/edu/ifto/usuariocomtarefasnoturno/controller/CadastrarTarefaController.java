@@ -29,7 +29,6 @@ public class CadastrarTarefaController extends HttpServlet {
             return;
         }
 
-        // Pega as categorias DO BANCO DE DADOS usando o DAO
         CategoriaDAO dao = new CategoriaDAO();
         List<Categoria> categorias = dao.listarTodas();
         request.setAttribute("listaCategorias", categorias);
@@ -51,9 +50,11 @@ public class CadastrarTarefaController extends HttpServlet {
         String titulo = request.getParameter("titulo");
         String descricao = request.getParameter("descricao");
         String data = request.getParameter("data");
-        String categoriaId = request.getParameter("categoria"); // Agora receberemos o ID da Categoria do Select
+        String categoriaId = request.getParameter("categoria");
 
-        if (titulo == null || titulo.isBlank() || descricao == null || descricao.isBlank()) {
+        if (titulo == null || titulo.isBlank() ||
+                descricao == null || descricao.isBlank() ||
+                categoriaId == null || categoriaId.isBlank()) {
             request.setAttribute("mensagemErro", "Você precisa informar o título e a descrição.");
             request.getRequestDispatcher("cadastrartarefa").forward(request, response); // recarrega a página via GET para buscar categorias
             return;
@@ -61,20 +62,20 @@ public class CadastrarTarefaController extends HttpServlet {
 
         Usuario logado = (Usuario) session.getAttribute("usuarioLogado");
 
-        Tarefa t = new Tarefa();
-        t.setTitulo(titulo);
-        t.setDescricao(descricao);
+        Tarefa tarefa = new Tarefa();
+        tarefa.setTitulo(titulo);
+        tarefa.setDescricao(descricao);
         if (data != null && !data.isBlank()) {
-            t.setData(LocalDate.parse(data));
+            tarefa.setData(LocalDate.parse(data));
         }
 
-        // Configura os relacionamentos usando IDs (Chaves Estrangeiras)
-        t.setIdUsuario(logado.getId());
-        t.setIdCategoria(Integer.parseInt(categoriaId));
+        // relacionamentos
+        tarefa.setIdUsuario(logado.getId());
+        tarefa.setIdCategoria(Integer.parseInt(categoriaId));
 
         TarefaDAO dao = new TarefaDAO();
         try {
-            dao.cadastrar(t);
+            dao.cadastrar(tarefa);
             request.setAttribute("mensagemSucesso", "Tarefa adicionada com sucesso!");
         } catch (Exception e) {
             request.setAttribute("mensagemErro", "Erro ao salvar tarefa: " + e.getMessage());

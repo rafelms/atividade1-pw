@@ -10,6 +10,7 @@
 
 <h2>Cadastrar Novo Administrador</h2>
 
+<!--se nao estiver vazio, exibe a mensagem-->
 <c:if test="${not empty mensagemErro}">
     <p style="color: red; font-weight: bold;">${mensagemErro}</p>
 </c:if>

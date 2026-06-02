@@ -63,10 +63,6 @@ public class Conexao {
     }
 
     public static void main(String[] args) {
-        // Exemplo Prático da Boa Prática com try-with-resources:
-        // Passando a conexão dentro dos parênteses do try, o próprio Java 
-        // SE ENCARREGA de fechar a conexão AUTOMATICAMENTE ao final do bloco,
-        // mesmo se acontecer algum erro lá dentro!
         try (Connection con = getConexao()) {
             if (con != null) {
                 System.out.println("SUCESSO: Conexão aberta e testada!");
@@ -74,6 +70,6 @@ public class Conexao {
         } catch (SQLException e) {
             System.err.println("Erro no teste da conexão.");
             e.printStackTrace();
-        } // <-- AQUI A CONEXÃO JÁ FOI FECHADA AUTOMATICAMENTE PELO JAVA!
+        }
     }
 }

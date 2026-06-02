@@ -25,6 +25,7 @@ public class CadastrarAdminController extends HttpServlet {
             return;
         }
 
+        // ocorre no servidor o redirecionamento e nao no navegador buscando outro caminho
         request.getRequestDispatcher("/WEB-INF/jsp/cadastraradmin.jsp").forward(request, response);
     }
 

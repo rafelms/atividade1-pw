@@ -14,7 +14,6 @@ public class UsuarioDAO {
     public void cadastrar(Usuario usuario) {
         String sql = "INSERT INTO usuario (nome, login, senha, perfil) VALUES (?, ?, ?, ?)";
 
-        // Declarados fora do try para que o bloco finally consiga enxergá-los e fechá-los
         Connection con = null;
         PreparedStatement stmt = null;
 
@@ -33,7 +32,6 @@ public class UsuarioDAO {
             throw new RuntimeException("Erro ao cadastrar usuário no banco: " + e.getMessage(), e);
 
         } finally {
-            // Sem ResultSet neste método — fechamento na ordem: Statement → Connection
             Conexao.fecharStatement(stmt);
             Conexao.fecharConexao(con);
         }
@@ -42,7 +40,6 @@ public class UsuarioDAO {
     public Usuario autenticar(String login, String senha) {
         String sql = "SELECT * FROM usuario WHERE login = ? AND senha = ?";
 
-        // Declarados fora do try — ResultSet também é necessário aqui para ser fechado no finally
         Connection con = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -81,7 +78,6 @@ public class UsuarioDAO {
     public void atualizar(Usuario usuario) {
         String sql = "UPDATE usuario SET nome = ?, senha = ? WHERE id = ?";
 
-        // Declarados fora do try para que o bloco finally consiga enxergá-los e fechá-los
         Connection con = null;
         PreparedStatement stmt = null;
 
@@ -99,7 +95,6 @@ public class UsuarioDAO {
             throw new RuntimeException("Erro ao atualizar usuário no banco: " + e.getMessage(), e);
 
         } finally {
-            // Sem ResultSet neste método — fechamento na ordem: Statement → Connection
             Conexao.fecharStatement(stmt);
             Conexao.fecharConexao(con);
         }

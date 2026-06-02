@@ -15,7 +15,6 @@ public class TarefaDAO {
     public void cadastrar(Tarefa tarefa) {
         String sql = "INSERT INTO tarefa (titulo, descricao, data, id_usuario, id_categoria) VALUES (?, ?, ?, ?, ?)";
 
-        // Declarados fora do try para que o bloco finally consiga enxergá-los e fechá-los
         Connection con = null;
         PreparedStatement stmt = null;
 
@@ -26,7 +25,7 @@ public class TarefaDAO {
             stmt.setString(1, tarefa.getTitulo());
             stmt.setString(2, tarefa.getDescricao());
 
-            // Tratamento caso a data venha nula
+            // data nula
             if (tarefa.getData() != null) {
                 stmt.setDate(3, java.sql.Date.valueOf(tarefa.getData()));
             } else {
@@ -42,7 +41,6 @@ public class TarefaDAO {
             throw new RuntimeException("Erro ao cadastrar tarefa", e);
 
         } finally {
-            // Sem ResultSet neste método — fechamento na ordem: Statement → Connection
             Conexao.fecharStatement(stmt);
             Conexao.fecharConexao(con);
         }
@@ -98,7 +96,6 @@ public class TarefaDAO {
             throw new RuntimeException("Erro ao deletar tarefa", e);
 
         } finally {
-            // Sem ResultSet neste método — fechamento na ordem: Statement → Connection
             Conexao.fecharStatement(stmt);
             Conexao.fecharConexao(con);
         }
@@ -107,10 +104,8 @@ public class TarefaDAO {
     public List<Tarefa> listarPorUsuario(int idUsuario) {
         List<Tarefa> lista = new ArrayList<>();
 
-        // O JOIN traz o nome da categoria atrelada
         String sql = "SELECT t.*, c.nome AS nome_categoria FROM tarefa t JOIN categoria c ON t.id_categoria = c.id WHERE t.id_usuario = ?";
 
-        // Declarados fora do try — ResultSet também é necessário aqui para ser fechado no finally
         Connection con = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -122,28 +117,27 @@ public class TarefaDAO {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                Tarefa t = new Tarefa();
-                t.setId(rs.getInt("id"));
-                t.setTitulo(rs.getString("titulo"));
-                t.setDescricao(rs.getString("descricao"));
+                Tarefa tarefa = new Tarefa();
+                tarefa.setId(rs.getInt("id"));
+                tarefa.setTitulo(rs.getString("titulo"));
+                tarefa.setDescricao(rs.getString("descricao"));
 
                 java.sql.Date sqlDate = rs.getDate("data");
                 if (sqlDate != null) {
-                    t.setData(sqlDate.toLocalDate());
+                    tarefa.setData(sqlDate.toLocalDate());
                 }
 
-                t.setIdUsuario(rs.getInt("id_usuario"));
-                t.setIdCategoria(rs.getInt("id_categoria"));
-                t.setCategoria(rs.getString("nome_categoria")); // Guarda o nome para exibir no JSP
+                tarefa.setIdUsuario(rs.getInt("id_usuario"));
+                tarefa.setIdCategoria(rs.getInt("id_categoria"));
+                tarefa.setCategoria(rs.getString("nome_categoria")); // Guarda o nome para exibir no JSP
 
-                lista.add(t);
+                lista.add(tarefa);
             }
 
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao listar tarefas do usuário", e);
 
         } finally {
-            // Com ResultSet — fechamento na ordem obrigatória: ResultSet → Statement → Connection
             Conexao.fecharResultSet(rs);
             Conexao.fecharStatement(stmt);
             Conexao.fecharConexao(con);
@@ -155,7 +149,6 @@ public class TarefaDAO {
     public Tarefa buscarPorId(int idTarefa, int idUsuario) {
         String sql = "SELECT * FROM tarefa WHERE id = ? AND id_usuario = ?";
 
-        // Declarados fora do try — ResultSet também é necessário aqui para ser fechado no finally
         Connection con = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -168,24 +161,23 @@ public class TarefaDAO {
             rs = stmt.executeQuery();
 
             if (rs.next()) {
-                Tarefa t = new Tarefa();
-                t.setId(rs.getInt("id"));
-                t.setTitulo(rs.getString("titulo"));
-                t.setDescricao(rs.getString("descricao"));
+                Tarefa tarefa = new Tarefa();
+                tarefa.setId(rs.getInt("id"));
+                tarefa.setTitulo(rs.getString("titulo"));
+                tarefa.setDescricao(rs.getString("descricao"));
 
                 java.sql.Date sqlDate = rs.getDate("data");
-                if (sqlDate != null) t.setData(sqlDate.toLocalDate());
+                if (sqlDate != null) tarefa.setData(sqlDate.toLocalDate());
 
-                t.setIdUsuario(rs.getInt("id_usuario"));
-                t.setIdCategoria(rs.getInt("id_categoria"));
-                return t;
+                tarefa.setIdUsuario(rs.getInt("id_usuario"));
+                tarefa.setIdCategoria(rs.getInt("id_categoria"));
+                return tarefa;
             }
 
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao buscar tarefa", e);
 
         } finally {
-            // Com ResultSet — fechamento na ordem obrigatória: ResultSet → Statement → Connection
             Conexao.fecharResultSet(rs);
             Conexao.fecharStatement(stmt);
             Conexao.fecharConexao(con);

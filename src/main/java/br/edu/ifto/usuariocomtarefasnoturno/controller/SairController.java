@@ -14,18 +14,15 @@ public class SairController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Pega a sessão atual do usuário (se ela existir)
         HttpSession sessao = request.getSession(false);
 
         if (sessao != null) {
-            sessao.invalidate(); // Destrói a sessão e limpa o 'usuarioLogado' da memória
+            sessao.invalidate();
         }
-
-        // Redireciona para a nossa nova página JSP pública na raiz
         response.sendRedirect("index.jsp");
     }
 
-    // se forçarem um post, exibimos o doget e ele faz o logout do mesmo jeito.
+    // se forçarem um post
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doGet(request, response);

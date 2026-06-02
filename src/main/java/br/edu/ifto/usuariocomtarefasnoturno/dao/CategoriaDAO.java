@@ -15,7 +15,6 @@ public class CategoriaDAO {
     public void cadastrar(Categoria categoria) {
         String sql = "INSERT INTO categoria (nome) VALUES (?)";
 
-        // Declarados fora do try para que o bloco finally consiga enxergá-los e fechá-los
         Connection con = null;
         PreparedStatement stmt = null;
 
@@ -26,11 +25,9 @@ public class CategoriaDAO {
             stmt.executeUpdate();
 
         } catch (SQLException e) {
-            // Repassando o motivo real do MySQL (ex: se for nome duplicado)
             throw new RuntimeException("Erro ao cadastrar categoria: " + e.getMessage(), e);
 
         } finally {
-            // Sem ResultSet neste método — fechamento na ordem: Statement → Connection
             Conexao.fecharStatement(stmt);
             Conexao.fecharConexao(con);
         }
@@ -50,11 +47,9 @@ public class CategoriaDAO {
             stmt.executeUpdate();
 
         } catch (SQLException e) {
-            // Repassando o motivo real do MySQL
             throw new RuntimeException("Erro ao atualizar categoria: " + e.getMessage(), e);
 
         } finally {
-            // Sem ResultSet neste método — fechamento na ordem: Statement → Connection
             Conexao.fecharStatement(stmt);
             Conexao.fecharConexao(con);
         }
@@ -121,7 +116,6 @@ public class CategoriaDAO {
         List<Categoria> lista = new ArrayList<>();
         String sql = "SELECT * FROM categoria ORDER BY nome";
 
-        // Declarados fora do try — ResultSet também é necessário aqui para ser fechado no finally
         Connection con = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -142,7 +136,6 @@ public class CategoriaDAO {
             throw new RuntimeException("Erro ao listar categorias: " + e.getMessage(), e);
 
         } finally {
-            // Com ResultSet — fechamento na ordem obrigatória: ResultSet → Statement → Connection
             Conexao.fecharResultSet(rs);
             Conexao.fecharStatement(stmt);
             Conexao.fecharConexao(con);

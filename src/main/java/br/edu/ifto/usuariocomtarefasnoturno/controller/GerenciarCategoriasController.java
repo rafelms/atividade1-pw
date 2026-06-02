@@ -28,7 +28,7 @@ public class GerenciarCategoriasController extends HttpServlet {
         }
 
         CategoriaDAO dao = new CategoriaDAO();
-        String acao = request.getParameter("acao");
+        String acao = request.getParameter("acao"); // editar ou remover
         String idParam = request.getParameter("id");
         Categoria catParaEditar = null;
 
@@ -48,11 +48,11 @@ public class GerenciarCategoriasController extends HttpServlet {
             request.setAttribute("mensagemErro", "Ação negada pelo banco de dados. " + e.getMessage());
         }
 
-        // Independente de dar erro ou não nas ações acima, CARREGA A LISTA sempre!
+        // sempre faz o carregamento da tabela
         try {
             List<Categoria> lista = dao.listarTodas();
             request.setAttribute("listaCategorias", lista);
-            request.setAttribute("catParaEditar", catParaEditar);
+            request.setAttribute("catParaEditar", catParaEditar); //pre preenche
         } catch (Exception e) {
             request.setAttribute("mensagemErro", "Erro ao carregar a tabela: " + e.getMessage());
         }
@@ -86,7 +86,6 @@ public class GerenciarCategoriasController extends HttpServlet {
 
                     dao.cadastrar(novaCat);
                 } else {
-                    // Instancia vazio e usa os sets
                     Categoria catExistente = new Categoria();
                     catExistente.setNome(nomeParam);
                     catExistente.setId(Integer.parseInt(idParam));
@@ -94,12 +93,10 @@ public class GerenciarCategoriasController extends HttpServlet {
                     dao.atualizar(catExistente);
                 }
 
-                // Só redireciona se deu TUDO certo
                 response.sendRedirect("gerenciarcategorias");
                 return;
 
-            } catch (Exception e) {
-                // Se o banco falhar, NÃO REDIRECIONA. Envia a mensagem de erro direto pra tela.
+            } catch (Exception e) { //se falhar nao redireciona
                 request.setAttribute("mensagemErro", "Falha ao salvar no banco. Verifique se o ID está como AUTO_INCREMENT. Detalhe técnico: " + e.getMessage());
                 request.setAttribute("listaCategorias", dao.listarTodas()); // Recarrega a tabela para a tela não sumir
                 request.getRequestDispatcher("/WEB-INF/jsp/gerenciarcategorias.jsp").forward(request, response);

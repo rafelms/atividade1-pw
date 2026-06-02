@@ -39,7 +39,7 @@ public class EditarTarefaController extends HttpServlet {
             if (tarefaEncontrada != null) {
                 request.setAttribute("tarefaEditar", tarefaEncontrada);
 
-                // Busca as categorias sempre frescas do banco
+                // Busca as categorias do banco
                 CategoriaDAO catDao = new CategoriaDAO();
                 request.setAttribute("listaCategorias", catDao.listarTodas());
 
@@ -75,21 +75,19 @@ public class EditarTarefaController extends HttpServlet {
             // Agora recebemos o ID da categoria, e não o nome
             int idCategoria = Integer.parseInt(request.getParameter("categoria"));
 
-            // Monta o objeto Tarefa
-            Tarefa t = new Tarefa();
-            t.setId(id);
-            t.setIdUsuario(usuarioLogado.getId());
-            t.setTitulo(titulo);
-            t.setDescricao(descricao);
+            Tarefa tarefaAtualizada = new Tarefa();
+            tarefaAtualizada.setId(id);
+            tarefaAtualizada.setIdUsuario(usuarioLogado.getId());
+            tarefaAtualizada.setTitulo(titulo);
+            tarefaAtualizada.setDescricao(descricao);
 
             if(data != null && !data.isBlank()){
-                t.setData(LocalDate.parse(data));
+                tarefaAtualizada.setData(LocalDate.parse(data));
             }
-            t.setIdCategoria(idCategoria);
+            tarefaAtualizada.setIdCategoria(idCategoria);
 
-            // Chama o DAO para ATUALIZAR NO BANCO
             TarefaDAO dao = new TarefaDAO();
-            dao.atualizar(t);
+            dao.atualizar(tarefaAtualizada);
 
             request.getSession().setAttribute("mensagemSucesso", "Tarefa atualizada com sucesso!");
 

@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-// Rota corrigida para bater com o botão do vertarefas.jsp
 @WebServlet("/removertarefa")
 public class DeletarTarefaController extends HttpServlet {
 
@@ -32,7 +31,6 @@ public class DeletarTarefaController extends HttpServlet {
             try {
                 int id = Integer.parseInt(tarefaId);
 
-                // Agora sim, deleta do banco de dados!
                 TarefaDAO dao = new TarefaDAO();
                 dao.remover(id, usuarioLogado.getId());
 
@@ -42,7 +40,6 @@ public class DeletarTarefaController extends HttpServlet {
             }
         }
 
-        // Redireciona via GET para forçar o recarregamento da tabela
         response.sendRedirect("vertarefas");
     }
 }
